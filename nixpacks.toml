@@ -1,0 +1,13 @@
+# ملف الإعدادات الخاص بنظام البناء Nixpacks في Railway
+# https://nixpacks.com/docs/configuration/file
+
+# في مرحلة الإعداد (setup phase)
+[phases.setup]
+# قم بتثبيت هذه الحزم باستخدام مدير حزم apt (لنظام Debian/Ubuntu)
+# هذه هي المكتبات الأساسية التي تحتاجها WeasyPrint لتعمل بشكل صحيح
+aptPkgs = ["libpango-1.0-0", "libharfbuzz0b", "libpangoft2-1.0-0", "libgobject-2.0-0"]
+
+# هذا الجزء يضمن أن Railway سيستمر في استخدام ملف Procfile لتشغيل البوت
+# بدلاً من محاولة تخمين أمر التشغيل بنفسه
+[start]
+cmd = "echo 'Using Procfile for start command'"

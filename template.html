@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>فاتورة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Cairo', Tahoma, Arial, sans-serif;
+            direction: rtl;
+            background-color: #fff;
+            margin: 0;
+            padding: 8px; /* 🔹 تصغير الحواف العامة */
+            font-size: 13px; /* 🔹 كبرنا الخط قليلاً لتحسين القراءة */
+            color: #222;
+            overflow: visible !important;
+        }
+
+        /* === ⭐️ القسم المضاف للملصق === */
+        .tear-off-label {
+            font-family: 'Cairo', Tahoma, Arial, sans-serif; /* 🔹 توحيد الخط */
+            direction: rtl;
+            max-width: 780px; /* 🔹 نفس عرض الفاتورة */
+            margin: auto;
+            margin-bottom: 15px; /* 🔹 مسافة للفصل */
+            padding: 12px;
+            border: 2px dashed #aaa; /* 🔹 حدود متقطعة للقص */
+            background-color: #f9f9f9;
+            page-break-inside: avoid; /* 🔹 لمنع انقسامها عند الطباعة */
+            font-size: 13px;
+        }
+        .tear-off-label h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #000;
+            text-align: center;
+        }
+        .tear-off-label p {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+        .tear-off-label .label-total {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ccc;
+        }
+        /* === نهاية القسم المضاف === */
+
+
+        .invoice-box {
+            max-width: 780px;
+            margin: auto;
+            padding: 10px; /* 🔹 تقليل الحشو الداخلي */
+            border: 1px solid #ddd;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+
+            /* ✅ منع تقطيع الفاتورة */
+            page-break-before: avoid !important;
+            page-break-after: avoid !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid-page !important;
+        }
+
+        .header {
+            width: 100%;
+            margin-bottom: 10px; /* 🔹 تقليل المسافة */
+        }
+
+        .header-left {
+            text-align: right;
+            width: 60%;
+        }
+
+        .header-right {
+            text-align: left;
+            width: 40%;
+        }
+
+        .header h1 {
+            font-size: 22px; /* 🔹 كبرنا عنوان الفاتورة */
+            color: #000;
+            margin: 0;
+        }
+
+        .header-left p {
+            margin: 2px 0;
+            font-size: 13px;
+        }
+
+        .logo {
+            max-width: 100px;
+            max-height: 70px;
+        }
+
+        .customer-details {
+            margin: 10px 0; /* 🔹 مسافة أقل */
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+        }
+
+        .customer-details p {
+            margin: 2px 0;
+            font-size: 13px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            margin-top: 5px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .items-table th, .items-table td {
+            border: 1px solid #ccc;
+            padding: 4px 5px;
+        }
+
+        .items-table th {
+            background-color: #f5f5f5;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .totals-table {
+            width: 50%;
+            margin-right: 50%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .totals-table td {
+            padding: 4px 6px;
+            border: 1px solid #eee;
+        }
+
+        .totals-table tr.final-total td {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            background-color: #f2f2f2;
+        }
+
+        .totals-table .total {
+            text-align: left;
+        }
+
+        /* ✅ لمنع فصل الجزء الأخير */
+        .no-break {
+            page-break-inside: avoid;
+            break-inside: avoid-page;
+        }
+
+        .footer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+        }
+
+        @page {
+            direction: rtl;
+            size: A4;
+            margin: 5mm; /* 🔹 تصغير الهوامش للطباعة */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tear-off-label">
+        <h3>ملصق بيانات الشحن (للقص)</h3>
+        <p><strong>فاتورة رقم:</strong> {{invoice_id}}</p>
+        <p><strong>إلى:</strong> {{customer_name}}</p>
+        <p><strong>الهاتف:</strong> {{customer_phone}}</p>
+        <p><strong>العنوان:</strong> {{customer_address}}</p>
+        <p class="label-total">الإجمالي للدفع: {{final_total}}</p>
+    </div>
+    <div class="invoice-box">
+        <table class="header">
+            <tr>
+                <td class="header-left">
+                    <h1>فاتورة</h1>
+                    <p>رقم الفاتورة: {{invoice_id}}</p>
+                    <p>التاريخ: {{invoice_date}}</p>
+                </td>
+                <td class="header-right">
+                    <img src="logo.png" alt="Logo" class="logo">
+                </td>
+            </tr>
+        </table>
+
+        <div class="customer-details">
+            <p><strong>فاتورة إلى:</strong> {{customer_name}}</p>
+            <p>📞 {{customer_phone}}</p>
+            <p>📍 {{customer_address}}</p>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>الصنف</th>
+                    <th>الكمية / الحجم</th>
+                    <th>الإجمالي الفرعي</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{items_rows}}
+            </tbody>
+        </table>
+
+        <div class="no-break">
+            <table class="totals-table">
+                <tbody>
+                    <tr>
+                        <td>إجمالي المنتجات:</td>
+                        <td class="total">{{sub_total}}</td>
+                    </tr>
+                    {{discount_section}}
+                    <tr class="final-total">
+                        <td>الإجمالي النهائي:</td>
+                        <td class="total">{{final_total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer">
+                نشكركم لثقتكم في منتجاتنا 🌸
+            </div>
+        </div>
+    </div>
+</body>
+</html>
